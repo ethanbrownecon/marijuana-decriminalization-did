@@ -1,73 +1,33 @@
-# Atlanta Marijuana Decriminalization and Crime Rates
+# Marijuana Decriminalization and Crime in Atlanta
 
-An exploratory Stata workflow for estimating the association between Atlanta's
-2017 marijuana decriminalization and agency-level violent and property crime
-rates using a difference-in-differences design.
+A difference in differences analysis from ECO 362, Research Seminar in Crime and Punishment, Berry College, Spring 2025.
 
-## Research design
+## Question
 
-The analysis compares Atlanta (identified by the source data's `treated`
-indicator) with untreated agencies in metropolitan areas where recreational
-marijuana remained illegal and the city had not decriminalized marijuana. The
-analysis window starts in 2010; 2017 is the first post-policy year.
+Did Atlanta's 2017 marijuana decriminalization change violent or property crime rates relative to comparable police agencies?
 
-The do-file applies those sample restrictions, plots group trends, and
-estimates a separate two-way fixed-effects model for each crime-rate outcome.
-Agency fixed effects account for time-invariant differences between agencies,
-year effects account for shocks shared across agencies, and standard errors
-are clustered by agency.
+## Why it matters
 
-This is an exploratory analysis, not a validated causal finding. In particular,
-the treated group in the source file appears to contain only one agency. With
-only one treated cluster, conventional cluster-robust inference is not
-reliable. Pre-policy trend plots are descriptive and cannot establish the
-parallel-trends assumption. Results should not be interpreted as causal without
-addressing these limitations and validating the treatment and comparison
-groups.
+Easing marijuana enforcement is often debated in terms of its effect on more serious crime. Atlanta is a large city with a clear policy date, which allows a before and after comparison against agencies that did not change their policy.
 
 ## Data
 
-Raw data are intentionally not included. The source file's provenance and
-redistribution terms have not been verified.
+Annual agency level crime rates, 2010 onward. The data file is not included because its source and redistribution terms have not been verified. To run the analysis, place a properly licensed copy at `data/annual_crime_data.dta` with these variables: `agency_id`, `agency_name`, `state`, `year`, `treated`, `state_legalREC`, `city_decrim`, `met2013`, `mean_pop`, `vio_rate`, `prop_rate`.
 
-To run the analysis, obtain a properly licensed copy of the agency-level crime
-panel, verify its source and variable definitions, and place it at:
+## Method
 
-```text
-data/annual_crime_data.dta
-```
+Atlanta is the treated agency. Comparison agencies serve more than 100,000 people, sit in metropolitan areas, have no city level decriminalization, and are in states where recreational marijuana remained illegal. Each outcome is estimated with a two way fixed effects model (agency and year effects), with standard errors clustered by agency. The script also plots pre and post trends for both groups.
 
-The dataset must contain these variables:
+## Limitations
 
-- `agency_id`, `agency_name`, `state`, `year`
-- `treated`, `state_legalREC`, `city_decrim`, `met2013`, `mean_pop`
-- `vio_rate`, `prop_rate`
-
-The do-file retains the treated agency and restricts comparison agencies to
-those with `mean_pop > 100000`, non-missing metropolitan-area identifiers, no
-city-level decriminalization, and states where recreational marijuana remained
-illegal. Keeping the treated agency separate from the control-group
-restrictions is essential; applying the control criteria to treated
-observations could remove the policy's post-period data. Confirm that these
-definitions match the data source and study period before interpreting output.
+Only one agency is treated, so cluster robust standard errors are unreliable, and pre policy trend plots cannot confirm parallel trends. The estimates are exploratory and should not be read as causal. No results are reported in this repository.
 
 ## Run
 
-Requires Stata with support for factor-variable notation and `areg`.
-
-From the repository root in Stata, run:
+In Stata, from the repository root:
 
 ```stata
 do analysis.do
 ```
 
-The script writes a Stata log and two trend charts to the repository root.
-These generated files and the local data directory are ignored by Git.
-
-## Repository scope
-
-This repository contains an independently cleaned analysis script and
-documentation only. It excludes the original course prompt, class handouts,
-student logs, generated tables, and raw data. No empirical findings are
-reported here because the data source and analysis have not been independently
-validated.
+The script writes a log and two trend charts to the repository root. These files and the local data folder are ignored by Git.
